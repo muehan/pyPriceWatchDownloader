@@ -5,6 +5,7 @@ import sys
 sys.path.insert(1, 'models')
 from product import Product
 from productType import ProductType
+from price import Price
 
 class Api:
 
@@ -40,3 +41,19 @@ class Api:
             )
             productTypes.append(productType)
         return productTypes
+
+    def getPricesFromDate(self, date):
+        r = requests.get('http://pricewatch.northeurope.cloudapp.azure.com/api/price/' + date)
+        result = json.loads(r.text)
+        
+        prices = []
+        for prPrice in result:
+            price = Price(
+                prPrice["Id"],
+                prPrice["Price"],
+                prPrice["InsteadOfPrice"],
+                prPrice["Date"],
+                prPrice["Productid"]
+            )
+            prices.append(price)
+        return prices
